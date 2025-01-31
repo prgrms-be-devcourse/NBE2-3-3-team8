@@ -6,6 +6,18 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     kotlin("plugin.jpa") version "1.9.25"
     kotlin("kapt") version "1.9.25"
+    kotlin("plugin.allopen") version "1.9.25"
+    kotlin("plugin.noarg") version "1.9.25"
+}
+
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable")
+    annotation("jakarta.persistence.MappedSuperclass")
+}
+
+noArg {
+    annotation("javax.persistence.Entity")
 }
 
 group = "org.programmers"
@@ -25,6 +37,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -110,6 +123,9 @@ dependencies {
     implementation ("org.jetbrains.kotlin:kotlin-stdlib")
     implementation ("org.jetbrains.kotlin:kotlin-reflect:1.9.25")
     implementation ("io.github.oshai:kotlin-logging-jvm:7.0.3")
+
+    // toString(), equals(), hashCode() 구현을 위해 사용할 라이브러리
+    implementation("com.github.consoleau:kassava:2.1.0")
 }
 
 val generatedDir = "src/main/generated"
