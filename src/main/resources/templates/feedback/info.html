@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signal Buddy</title>
+  <!-- 공통 스타일 -->
+  <link href="/css/common/common.css" rel="stylesheet"/>
+  <!-- 헤더 스타일 -->
+  <link href="/css/common/header.css" rel="stylesheet"/>
+
+  <link href="/css/feedback/info.css" rel="stylesheet"/>
+</head>
+<body>
+<th:block th:replace="~{fragments/header::headerFragment}"></th:block>
+<div id="webcrumbs">
+  <div
+      class="w-[800px] bg-neutral-100 rounded-lg shadow-md min-h-[600px] mx-auto p-4"
+  >
+    <header class="text-center mb-8">
+      <h1 class="text-2xl font-title text-neutral-900">피드백 게시판</h1>
+      <p class="text-neutral-700">건의 사항을 자유롭게 남겨주세요.</p>
+    </header>
+    <section class="bg-white rounded-lg p-4 mb-4">
+      <div class="flex justify-between items-center mb-2">
+        <div class="flex items-center gap-2">
+              <span class="bg-primary-500 text-primary-50 text-sm py-1 px-2 rounded-md bg-red-500"
+                    th:if="${feedback.getAnswerStatus().name().equals('BEFORE')}">
+                답변 전
+              </span>
+          <span class="bg-primary-500 text-primary-50 text-sm py-1 px-2 rounded-md bg-green-500"
+                th:unless="${feedback.getAnswerStatus().name().equals('BEFORE')}">
+                답변 완료
+              </span>
+          <h2 class="text-lg font-bold text-neutral-950" th:text="${feedback.getSubject()}">
+            건의합니다~</h2>
+        </div>
+        <div class="relative">
+          <button class="cursor-pointer"
+                  id="feedback-menu-btn"
+                  th:attr="hidden=${user != null && feedback.getMember().getMemberId() != user.getMemberId()}">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+          <div class="absolute bg-white rounded-md shadow-md z-10 right-0 mt-2 text-sm w-[120px]"
+               id="menu-box"
+               th:attrappend="data-feedback-id=${feedbackId}">
+            <ul>
+              <li class="px-4 py-2 hover:bg-neutral-100">
+                <a th:href="@{/feedbacks/edit/{feedbackId}(feedbackId=${feedback.getFeedbackId()})}">
+                  수정하기
+                </a>
+              </li>
+              <li class="px-4 py-2 hover:bg-neutral-100"
+                  id="delete-btn">
+                삭제하기
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="text-sm text-neutral-500 mb-2"
+           th:text="'작성자: ' + ${feedback.getMember().getNickname()} + ' | ' +
+           ${feedback.getUpdatedAt().toString().replace('T', ' ').substring(0, 16)}">
+        작성자: 닉네임 | 2024-12-12 14:13:10
+      </div>
+      <p class="text-neutral-900" th:text="${feedback.getContent()}">
+        이거이거 바꿔주세요 바꿔주세요
+      </p>
+      <div class="flex gap-4 mt-4">
+        <button class="flex items-center text-neutral-700 hover:text-primary-500" onclick="location.href='#comment-write-box'">
+          <span class="material-symbols-outlined mr-1">chat_bubble</span>
+          댓글쓰기
+        </button>
+        <button class="flex items-center text-neutral-700 hover:text-primary-500"
+                th:data-is-existed-like="${isExistedLike}"
+                th:classappend="${isExistedLike} ? 'heart-filled' : ''"
+                th:onclick="'clickLikeBtn()'"
+                id="like-btn">
+          <span class="material-symbols-outlined mr-1"
+                th:classappend="${isExistedLike} ? 'text-primary-500' : ''"
+                id="heart">
+            favorite
+          </span>
+          <span id="like-count" th:text="${feedback.getLikeCount()}"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 댓글 부분 -->
+    <section class="bg-neutral-50 rounded-lg p-4 text-sm mb-4"
+             th:each="comment : ${commentPage.getSearchResults()}">
+      <div class="flex justify-between items-center mb-1"
+           id="comment-box"
+           th:attrappend="data-comment-id=${comment.getCommentId()}">
+        <div class="text-neutral-600"
+             th:text="${comment.getMember().getNickname()} + ' | ' +
+           ${feedback.getUpdatedAt().toString().replace('T', ' ').substring(0, 16)}">
+          nick | 2024-12-12 16:20:45
+        </div>
+        <div class="flex gap-2"
+             th:if="${user != null && comment.getMember().getMemberId() == user.getMemberId()}">
+          <button
+              class="py-1 px-3 bg-neutral-200 text-neutral-700 rounded-md hover:bg-neutral-300"
+              id="comment-edit-btn"
+              th:onclick="'showEditBox(' + ${comment.getCommentId()} + ')'">
+            수정
+          </button>
+          <button
+              class="py-1 px-3 bg-neutral-200 text-neutral-700 rounded-md hover:bg-neutral-300"
+              id="comment-delete-btn"
+              th:onclick="'deleteComment(' + ${comment.getCommentId()} + ')'">
+            삭제
+          </button>
+        </div>
+      </div>
+
+      <!-- 댓글 내용이 p로 표시되지만, 수정 버튼을 클릭하면 textarea로 바뀐다. -->
+      <p class="text-neutral-900 break-words"
+         th:id="'comment-content-' + ${comment.getCommentId()}"
+         th:text="${comment.getContent()}">
+        이건인정;;;;;;;;;;;;;;;;;;;;;;;;
+      </p>
+      <!-- 댓글 수정 textarea (초기에는 숨겨짐) -->
+      <textarea class="hidden comment-edit-textarea"
+                th:id="'comment-edit-textarea-' + ${comment.getCommentId()}"
+                th:text="${comment.getContent()}"></textarea>
+      <button class="hidden py-1 px-4 bg-primary-500 text-primary-50 rounded-md hover:bg-primary-600"
+              th:id="'comment-edit-cancel-btn-' + ${comment.getCommentId()}"
+              th:onclick="'hideEditBox(' + ${comment.getCommentId()} + ')'">
+        수정 취소
+      </button>
+      <button class="hidden py-1 px-4 bg-primary-500 text-primary-50 rounded-md hover:bg-primary-600"
+              th:id="'comment-edit-complete-btn-' + ${comment.getCommentId()}"
+              th:onclick="'editComment(' + ${comment.getCommentId()} + ')'">
+        수정 완료
+      </button>
+    </section>
+
+    <!-- 댓글 작성 부분 -->
+    <section class="bg-white rounded-lg p-4">
+      <div class="text-sm font-semibold text-neutral-900 mb-2">
+        댓글 작성
+      </div>
+      <textarea
+          class="w-full h-[100px] bg-neutral-50 rounded-md p-2 border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          placeholder="댓글을 입력하세요."
+          id="comment-write-box"
+      ></textarea>
+      <div class="text-right mt-2">
+        <button class="py-1 px-4 bg-primary-500 text-primary-50 rounded-md hover:bg-primary-600"
+                id="comment-write-btn"
+                onclick="writeComment()">
+          등록
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+  const menuBtn = document.getElementById("feedback-menu-btn");
+  const menu = document.getElementById("menu-box");
+  const deleteBtn = document.getElementById("delete-btn");
+  const commentWriteBtn = document.getElementById("comment-write-btn");
+
+  menuBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    if (menu.style.display === 'none') {
+      menu.style.display = 'block';
+    } else {
+      menu.style.display = 'none';
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    menu.style.display = 'none';
+  });
+
+  menu.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+
+  // 피드백 삭제 요청
+  deleteBtn.addEventListener("click", (event) => {
+    const feedbackId = menu.getAttribute('data-feedback-id');
+
+    fetch(`/api/feedbacks/${feedbackId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = '/feedbacks'; // 삭제 후 피드백 목록 페이지로 리다이렉트
+      } else {
+        alert('삭제에 실패했습니다.');
+        response.json()
+        .then(data => console.log(data.message));
+      }
+    })
+    .catch(error => {
+      console.error('삭제 요청 중 오류 발생:', error);
+    });
+  });
+
+  // 댓글 작성 요청
+  function writeComment() {
+    const feedbackId = menu.getAttribute('data-feedback-id');
+    const comment = document.getElementById("comment-write-box").value;
+
+    fetch(`/api/comments/write`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'feedbackId': feedbackId,
+        'content': comment
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = location.href; // 페이지 새로고침
+      } else {
+        alert('댓글 작성에 실패했습니다.');
+        response.json()
+        .then(data => console.log(data.message));
+      }
+    })
+    .catch(error => {
+      console.error('댓글 작성 요청 중 오류 발생:', error);
+    });
+  }
+
+  // 댓글 삭제 요청
+  function deleteComment(commentId) {
+    fetch(`/api/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = location.href; // 페이지 새로고침
+      } else {
+        alert('삭제에 실패했습니다.');
+        response.json()
+        .then(data => console.log(data.message));
+      }
+    })
+    .catch(error => {
+      console.error('삭제 요청 중 오류 발생:', error);
+    });
+  }
+
+  // 댓글 수정 박스 보이게 하기
+  function showEditBox(commentId) {
+    const commentContent = document.getElementById('comment-content-' + commentId);
+    const commentTextarea = document.getElementById('comment-edit-textarea-' + commentId);
+    const cancelButton = document.getElementById('comment-edit-cancel-btn-' + commentId);
+    const completeButton = document.getElementById('comment-edit-complete-btn-' + commentId);
+
+    // 댓글을 textarea로 변환
+    commentContent.classList.add('hidden');  // 기존 댓글 텍스트 숨기기
+    commentTextarea.classList.remove('hidden');  // textarea 보이기
+    cancelButton.classList.remove('hidden');  // 취소 버튼 보이기
+    completeButton.classList.remove('hidden');  // 완료 버튼 보이기
+  }
+
+  // 댓글 수정 박스 숨기기
+  function hideEditBox(commentId) {
+    const commentContent = document.getElementById('comment-content-' + commentId);
+    const commentTextarea = document.getElementById('comment-edit-textarea-' + commentId);
+    const cancelButton = document.getElementById('comment-edit-cancel-btn-' + commentId);
+    const completeButton = document.getElementById('comment-edit-complete-btn-' + commentId);
+
+    // 댓글을 p로 변환
+    commentContent.classList.remove('hidden');  // 기존 댓글 텍스트 보이기
+    commentTextarea.classList.add('hidden');  // textarea 숨기기
+    cancelButton.classList.add('hidden');  // 취소 버튼 숨기기
+    completeButton.classList.add('hidden');  // 완료 버튼 숨기기
+  }
+
+  // 댓글 수정 요청
+  function editComment(commentId) {
+    const feedbackId = menu.getAttribute('data-feedback-id');
+    const commentEditBox = document.getElementById('comment-edit-textarea-' + commentId);
+    const commentContent = document.getElementById('comment-content-' + commentId);
+
+    const updatedComment = commentEditBox.value;
+
+    fetch(`/api/comments/${commentId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'feedbackId': feedbackId,
+        'content': updatedComment
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        // 서버 응답 후 댓글 내용 업데이트
+        commentContent.innerText = updatedComment;
+
+        hideEditBox(commentId);
+      } else {
+        alert('댓글 수정에 실패했습니다.');
+        response.json()
+        .then(data => console.log(data.message));
+      }
+    })
+    .catch(error => {
+      console.error('댓글 수정 요청 중 오류 발생:', error);
+    });
+  }
+
+  function clickLikeBtn() {
+    const feedbackId = menu.getAttribute('data-feedback-id');
+    const likeBtn = document.getElementById('like-btn');
+    const isExistedLike = likeBtn.getAttribute('data-is-existed-like') === 'true';
+
+    if (isExistedLike) {
+      deleteLike(feedbackId); // 좋아요 삭제
+    } else {
+      addLike(feedbackId); // 좋아요 추가
+    }
+
+    likeBtn.setAttribute('data-is-existed-like', !isExistedLike === true ? 'true' : 'false');
+  }
+
+  // 좋아요 추가 요청
+  function addLike(feedbackId) {
+    fetch(`/api/feedbacks/${feedbackId}/like`, {
+      method: 'POST'
+    })
+    .then(response => {
+      if (response.ok) {
+        const likeBtn = document.getElementById('like-btn');
+        const heart = document.getElementById('heart');
+        const likeCount = document.getElementById('like-count');
+
+        likeBtn.classList.add('heart-filled');
+        heart.classList.add('text-primary-500');
+        likeCount.textContent = Number(likeCount.textContent) + 1;
+      } else {
+        alert('좋아요 추가를 실패했습니다.');
+        response.json()
+        .then(data => console.log(data.message));
+      }
+    })
+    .catch(error => {
+      console.error('좋아요 추가 요청 중 오류 발생:', error);
+    });
+  }
+
+  // 좋아요 취소 요청
+  function deleteLike(feedbackId) {
+    fetch(`/api/feedbacks/${feedbackId}/like`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (response.ok) {
+        const likeBtn = document.getElementById('like-btn');
+        const heart = document.getElementById('heart');
+        const likeCount = document.getElementById('like-count');
+
+        likeBtn.classList.remove('heart-filled');
+        heart.classList.remove('text-primary-500');
+        likeCount.textContent = Number(likeCount.textContent) - 1;
+      } else {
+        alert('좋아요 취소를 실패했습니다.');
+        response.json()
+        .then(data => console.log(data.message));
+      }
+    })
+    .catch(error => {
+      console.error('좋아요 취소 요청 중 오류 발생:', error);
+    });
+  }
+</script>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>탈퇴 회원 관리</title>
+  <style>
+
+  </style>
+  <link href="/css/common/header.css" rel="stylesheet">
+  <link href="/css/admin/withdrawal.css" rel="stylesheet">
+</head>
+<body>
+<div id="webcrumbs">
+  <div class="w-max h-max bg-neutral-800 rounded-lg shadow-lg">
+    <header class="flex justify-between items-center px-6 py-4 bg-neutral-950 text-neutral-50">
+      <a class="logo-box" href="/">
+        <img alt="" class="logo" src="/images/logo.png">
+        <div class="font-title text-neutral-300 text-lg">Signal Buddy</div>
+      </a>
+      <nav class="flex gap-6"> <a href="#" class="text-neutral-300" th:onclick="|location.href='@{/admins}'|">Home</a>
+        <a href="#" class="text-neutral-300">Feedback</a>
+        <a href="#" class="text-neutral-300" th:onclick="|location.href='@{/admins/members/list}'|">User_Manage</a>
+        <button class="px-4 py-2 bg-white text-neutral-950 rounded-md">Log out</button>
+      </nav>
+    </header>
+    <div class="flex">
+      <aside class="w-[300px] h-max bg-neutral-200 p-6">
+        <h1 class="text-xl font-title mb-6">회원 정보 관리</h1>
+        <div class="flex flex-col gap-4">
+          <button class="px-4 py-2 bg-black text-primary-50 rounded-md hover:bg-neutral-100" th:onclick="|location.href='@{/admins/members/list}'|">회원 정보</button>
+          <button class="px-4 py-2 bg-black text-white rounded-md hover:bg-neutral-100" th:onclick="|location.href='@{/admins/members-withdrawal}'|">탈퇴 회원</button>
+        </div>
+      </aside>
+      <main class="flex-1 p-6">
+        <div class="overflow-x-auto">
+          <table class="w-full bg-neutral-50 rounded-lg text-neutral-950">
+            <thead>
+            <tr class="bg-neutral-200">
+              <th class="p-4 text-left">프로필</th>
+              <th class="p-4 text-left">이름</th>
+              <th class="p-4 text-left">요청 날짜</th>
+              <th class="p-4 text-left">삭제 요청</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr class="bg-neutral-100 text-sm hover:bg-neutral-200" th:each="member : ${members.content}"
+                th:onclick="|location.href='@{/admins/members-detail/{id}(id=${member.memberId})}'|">
+              <td class="p-2">
+                <img th:src="${'/api/members/files/' + member.profileImageUrl}" alt="Avatar"
+                     style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-left: 10px"/>
+              </td>
+              <td class="py-4 px-6" th:text="${member.nickname}"></td>
+              <td class="py-4 px-6" th:text="${member.updatedAt}"></td>
+              <td class="py-4 px-6" th:text="${member.memberStatus}"></td>
+
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+.gap-2 {
+  gap: 8px;
+}
+
+.text-primary-700 {
+  --tw-text-opacity: 1;
+  color: rgba(70, 140, 213, 1);
+}
+
+.text-neutral-500 {
+  --tw-text-opacity: 1;
+  color: rgb(153 153 153 / var(--tw-text-opacity));
+}
+
+.p-6 {
+  padding: 24px;
+}
+
+.p-4 {
+  padding: 16px;
+}
+
+.border-t {
+  border-top-width: 1px;
+}
+
+.pt-4 {
+  padding-top: 16px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.bookmark-box {
+  border-radius: 9999px;
+  height: 60px;
+}
+
+.bookmark-name {
+  font-size: 13px;
+}
+
+.bookmark-address {
+  font-size: 11px;
+}
+
+.bookmarks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.active {
+  color: #486284;
+  font-weight: bold;
+}
+
+.bookmark-add {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.add {
+  color: rgba(148, 146, 154, 1)
+}
+
+.add-box {
+  cursor: pointer;
+}
+
+.edit-box {
+  background: linear-gradient(#000, #000) center bottom 5px / calc(100% - 10px) 2px no-repeat;
+}
+
+.edit-box input {
+  padding-left: 10px;
+  width: 300px;
+}
+
+.search-input {
+  background: none;
+  width: 300px;
+}
+
+.suggestions-list {
+  position: absolute; /* 부모 요소 기준으로 위치 설정 */
+  width: 20%;
+  max-height: 200px; /* 최대 높이 제한 */
+  overflow-y: auto; /* 스크롤바 표시 */
+  border: 1px solid #ccc; /* 테두리 */
+  background-color: white;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  visibility: hidden; /* 초기에는 숨김 */
+  display: block;
+}
+
+.suggestions-list.show {
+  visibility: visible; /* 보이도록 설정 */
+}
+
+.search-list {
+  display: block;
+  width: max-content;
+}

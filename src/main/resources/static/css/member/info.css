@@ -1,0 +1,95 @@
+.profile-img {
+  width: 120px;
+}
+
+.input-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.input-value {
+  width: 300px;
+}
+
+.cancel {
+  background-color: #1b2b40;
+}
+
+.profile-img {
+  position: relative;
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 20px auto;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+}
+
+.modal {
+  position: fixed; /* 화면 기준 고정 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 화면의 중심으로 이동 */
+  z-index: 1000; /* 다른 요소 위에 표시 */
+  background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+  width: 100%; /* 전체 화면 가로 */
+  height: 100%; /* 전체 화면 세로 */
+  display: flex; /* 모달 내용 중앙 정렬 */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%; /* 모바일에서는 거의 화면 전체 너비 */
+  max-width: 400px; /* 데스크톱에서는 고정 너비 */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.modal-input {
+  display: flex;
+  align-items: center;
+}
+
+.modal-button {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.camera-btn {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profile-preview {
+  position: relative;
+  height: 140px;
+}
+
+.camera-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
