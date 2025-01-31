@@ -159,3 +159,7 @@ sourceSets {
 tasks.named<Delete>("clean") {
     delete(generatedDir)
 }
+
+tasks.named<ProcessResources>("processResources") {
+    dependsOn("copyYaml")
+}
