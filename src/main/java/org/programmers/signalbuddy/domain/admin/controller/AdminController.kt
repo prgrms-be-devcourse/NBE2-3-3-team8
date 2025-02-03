@@ -1,4 +1,4 @@
-package org.programmers.signalbuddy.domain.member.controller
+package org.programmers.signalbuddy.domain.admin.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

@@ -3,39 +3,40 @@ package org.programmers.signalbuddy.global.config
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import java.util.*
 
 @Configuration
-class EmailConfig(
+class EmailConfig{
+
     @Value("\${spring.mail.smtp.host}")
-    private val host: String,
+    lateinit var host: String
 
     @Value("\${spring.mail.smtp.port}")
-    private val port: Int,
+    lateinit var port: String
 
     @Value("\${spring.mail.smtp.username}")
-    private val username: String,
+    lateinit var username: String
 
     @Value("\${spring.mail.smtp.password}")
-    private val password: String,
+    lateinit var password: String
 
     @Value("\${spring.mail.smtp.properties.mail.smtp.auth}")
-    private val auth: Boolean,
+    lateinit var auth: String
 
     @Value("\${spring.mail.smtp.properties.mail.smtp.starttls.enable}")
-    private val starttlsEnable: Boolean,
+    lateinit var starttlsEnable: String
 
     @Value("\${spring.mail.smtp.properties.mail.smtp.starttls.required}")
-    private val starttlsRequired: Boolean,
-) {
+    lateinit var starttlsRequired: String
 
     @Bean
     fun javaMailSender(): JavaMailSender {
         val mailSender = JavaMailSenderImpl()
         mailSender.host = host
-        mailSender.port = port
+        mailSender.port = port.toInt()
         mailSender.username = username
         mailSender.password = password
         mailSender.defaultEncoding = "UTF-8"
