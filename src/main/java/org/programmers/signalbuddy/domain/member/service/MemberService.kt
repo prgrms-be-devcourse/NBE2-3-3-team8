@@ -51,11 +51,12 @@ class MemberService(
         val member = memberRepository.findByIdOrNull(id) ?: throw BusinessException(
             MemberErrorCode.NOT_FOUND_MEMBER
         )
-        val encodedPassword = encodedPassword(member.password)
+        val encodedPassword = encodedPassword(memberUpdateRequest.password)
         val saveProfileImage = saveProfileImageIfPresent(memberUpdateRequest.imageFile)
 
         member.updateMember(memberUpdateRequest, encodedPassword, saveProfileImage)
         updateSecurityContext(member, request)
+        // $2a$10$WldYHzzoc/1vDhGzLeudB.56lPi4A7BEMXIMIi.ZnDwPlbfOG.h8G
         return MemberMapper.INSTANCE.toDto(member)
     }
 
