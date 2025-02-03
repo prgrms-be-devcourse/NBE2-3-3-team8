@@ -1,7 +1,7 @@
 package org.programmers.signalbuddy.domain.member.controller
 
 import org.programmers.signalbuddy.domain.member.entity.Member
-import org.programmers.signalbuddy.domain.member.service.MemberService
+import org.programmers.signalbuddy.domain.member.service.AdminService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/members")
 class MemberController(
-    private val memberService: MemberService
+    private val adminService: AdminService
 ) {
 
     /**
@@ -19,7 +19,7 @@ class MemberController(
      */
     @GetMapping("/{id}")
     fun getMember(@PathVariable id: Long): ResponseEntity<Member> {
-        val member = memberService.getMemberById(id)
+        val member = adminService.getMemberById(id)
         return ResponseEntity.ok(member)
     }
 }
