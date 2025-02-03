@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MemberService(
-    private val memberRepository: MemberRepository,
+    private val memberRepository: MemberRepository
 ) {
     @Transactional(readOnly = true)
     fun getMemberById(id: Long): Member {

@@ -1,7 +1,6 @@
 package org.programmers.signalbuddy.global.batch.job
 
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.programmers.signalbuddy.global.support.BatchTest
 import org.springframework.batch.core.ExitStatus

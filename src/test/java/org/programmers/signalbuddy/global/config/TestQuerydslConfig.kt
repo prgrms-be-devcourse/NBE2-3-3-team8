@@ -7,10 +7,10 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 
 @TestConfiguration
-class TestQuerydslConfig {
-
+class TestQuerydslConfig (
     @PersistenceContext
-    private val entityManager: EntityManager? = null
+    private val entityManager: EntityManager
+) {
 
     @Bean
     fun jpaQueryFactory(): JPAQueryFactory {

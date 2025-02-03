@@ -22,7 +22,7 @@ object QueryDslUtil {
      */
     @JvmStatic
     fun betweenDates(
-        path: DateTimePath<LocalDateTime?>,
+        path: DateTimePath<LocalDateTime>,
         startDate: LocalDate?, endDate: LocalDate?
     ): BooleanExpression {
         var predicate: BooleanExpression? = null
@@ -53,12 +53,12 @@ object QueryDslUtil {
     fun getOrderSpecifiers(
         pageable: Pageable, type: Class<*>?,
         variable: String
-    ): Array<out OrderSpecifier<*>?> {
-        val orderSpecifiers: MutableList<OrderSpecifier<*>> = ArrayList()
+    ): Array<OrderSpecifier<*>> {
+        val orderSpecifiers = ArrayList<OrderSpecifier<*>>()
 
         // 정렬 조건이 없는 경우
         if (pageable.sort.isUnsorted) {
-            return arrayOfNulls(1)
+            return orderSpecifiers.toTypedArray()
         }
 
         val pathBuilder: PathBuilder<*> = PathBuilder(type, variable)

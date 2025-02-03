@@ -52,7 +52,7 @@ class SecurityConfig (
                         "/webjars/**"
                     ).permitAll() // 로그인, 회원가입
                     .requestMatchers(
-                        "/members/login", "admins/login", "/api/members/join",
+                        "/members/login", "/admins/login", "/api/members/join",
                         "/api/admins/join", "/members/signup", "/api/members/files/**"
                     ).permitAll() // 북마크
                     .requestMatchers("/api/bookmarks/**", "/bookmarks/**").hasRole("USER") // 댓글
