@@ -17,7 +17,9 @@ allOpen {
 }
 
 noArg {
-    annotation("javax.persistence.Entity")
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
 }
 
 group = "org.programmers"
@@ -82,12 +84,10 @@ dependencies {
     kaptTest ("org.mapstruct:mapstruct-processor:1.6.3")
 
     // QueryDSL
-    implementation ("com.querydsl:querydsl-jpa:5.0.0:jakarta")
-    annotationProcessor ("com.querydsl:querydsl-apt:5.0.0:jakarta")
-    annotationProcessor ("jakarta.annotation:jakarta.annotation-api")
-    annotationProcessor ("jakarta.persistence:jakarta.persistence-api")
-    kapt ("com.querydsl:querydsl-apt:5.0.0:jakarta")
-    kapt ("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.1.0:jakarta")
+    kapt("jakarta.annotation:jakarta.annotation-api")
+    kapt("jakarta.persistence:jakarta.persistence-api")
 
     // Thymeleaf
     implementation ("org.springframework.boot:spring-boot-starter-thymeleaf")
@@ -128,8 +128,6 @@ dependencies {
     implementation("com.github.consoleau:kassava:2.1.0")
 }
 
-val generatedDir = "src/main/generated"
-
 // 테스트 환경 설정
 tasks.named<Test>("test") {
     systemProperty("spring.profiles.active", "test")
@@ -143,23 +141,32 @@ tasks.register<Copy>("copyYaml") {
     into("src/main/resources")
 }
 
-// QueryDSL QClass 파일 생성 위치 설정
-tasks.withType<JavaCompile> {
-    options.generatedSourceOutputDirectory.set(file(generatedDir))
+tasks.named<ProcessResources>("processResources") {
+    dependsOn("copyYaml")
 }
 
-// QueryDSL QClass 디렉터리를 Java Source Set에 추가
+// Querydsl 설정부 추가
+val generated = file("src/main/generated")
+
+// querydsl QClass 파일 생성 위치를 지정
+tasks.withType<JavaCompile> {
+    options.generatedSourceOutputDirectory.set(generated)
+}
+
+// kotlin source set 에 querydsl QClass 위치 추가
 sourceSets {
-    named("main") {
-        java.srcDirs(generatedDir)
+    main {
+        kotlin.srcDirs += generated
     }
 }
 
-// Gradle Clean 작업 시 QClass 디렉터리 삭제
-tasks.named<Delete>("clean") {
-    delete(generatedDir)
+// gradle clean 시에 QClass 디렉토리 삭제
+tasks.named("clean") {
+    doLast {
+        generated.deleteRecursively()
+    }
 }
 
-tasks.named<ProcessResources>("processResources") {
-    dependsOn("copyYaml")
+kapt {
+    generateStubs = true
 }
