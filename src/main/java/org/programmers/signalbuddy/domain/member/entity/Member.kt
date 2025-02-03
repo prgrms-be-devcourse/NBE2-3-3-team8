@@ -45,7 +45,7 @@ class Member(
 
         // 요청자와 작성자가 다른 경우
         fun isNotSameMember(user: CustomUser2Member?, member: Member): Boolean =
-            user?.memberId != member.memberId
+            user?.memberId != member.memberId!!
     }
 
     fun updateMember(
