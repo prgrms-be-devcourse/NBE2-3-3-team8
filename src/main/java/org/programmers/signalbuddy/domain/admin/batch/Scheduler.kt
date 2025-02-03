@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled
 class Scheduler(private val jobLauncher: JobLauncher,
                 private val deleteMemberJob: Job) {
     @Scheduled(cron = "0 59 23 * * ?")
-    //@Scheduled(cron = "0/5 * * * * ?")
     fun runJob() {
         val params = JobParametersBuilder().toJobParameters()
         jobLauncher.run(deleteMemberJob, params)
