@@ -3,12 +3,10 @@ package org.programmers.signalbuddy.domain.comment.repository
 import com.querydsl.core.types.Order
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.Projections
-import com.querydsl.core.types.QBean
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.programmers.signalbuddy.domain.comment.dto.CommentResponse
 import org.programmers.signalbuddy.domain.comment.entity.QComment.comment
 import org.programmers.signalbuddy.domain.member.dto.MemberResponse
-import org.programmers.signalbuddy.domain.member.entity.Member
 import org.programmers.signalbuddy.domain.member.entity.QMember.member
 import org.programmers.signalbuddy.domain.member.entity.enums.MemberStatus
 import org.springframework.data.domain.Page
@@ -50,7 +48,7 @@ class CustomCommentRepositoryImpl (
     }
 
     companion object {
-        private val memberResponseDto = Projections.fields(
+        private val memberResponseDto = Projections.constructor(
             MemberResponse::class.java,
             member.memberId,
             member.email,
@@ -60,12 +58,11 @@ class CustomCommentRepositoryImpl (
             member.memberStatus
         )
 
-        private val commentResponseDto =
-            Projections.fields(
-                CommentResponse::class.java,
-                comment.commentId, comment.content,
-                comment.createdAt, comment.updatedAt,
-                memberResponseDto.`as`("member")
-            )
+        private val commentResponseDto = Projections.constructor(
+            CommentResponse::class.java,
+            comment.commentId, comment.content,
+            comment.createdAt, comment.updatedAt,
+            memberResponseDto
+        )
     }
 }
