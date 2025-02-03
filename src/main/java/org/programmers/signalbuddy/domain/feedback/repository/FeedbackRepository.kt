@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
+fun FeedbackRepository.findByIdOrThrow(feedbackId: Long): Feedback = findByIdOrNull(feedbackId)
+    ?: throw BusinessException(FeedbackErrorCode.NOT_FOUND_FEEDBACK)
+
 @Repository
-interface FeedbackRepository: JpaRepository<Feedback, Long>, CustomFeedbackRepository {
-    fun findByIdOrThrow(feedbackId: Long): Feedback = findByIdOrNull(feedbackId)
-        ?: throw BusinessException(FeedbackErrorCode.NOT_FOUND_FEEDBACK)
-}
+interface FeedbackRepository: JpaRepository<Feedback, Long>, CustomFeedbackRepository
