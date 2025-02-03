@@ -1,9 +1,9 @@
 package org.programmers.signalbuddy.domain.feedback.repository
 
+import com.querydsl.core.types.ConstructorExpression
 import com.querydsl.core.types.Order
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.Projections
-import com.querydsl.core.types.QBean
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
@@ -11,7 +11,6 @@ import org.programmers.signalbuddy.domain.feedback.dto.FeedbackResponse
 import org.programmers.signalbuddy.domain.feedback.entity.QFeedback.feedback
 import org.programmers.signalbuddy.domain.feedback.entity.enums.AnswerStatus
 import org.programmers.signalbuddy.domain.member.dto.MemberResponse
-import org.programmers.signalbuddy.domain.member.entity.Member
 import org.programmers.signalbuddy.domain.member.entity.QMember.member
 import org.programmers.signalbuddy.domain.member.entity.enums.MemberStatus
 import org.programmers.signalbuddy.global.util.QueryDslUtil.betweenDates
@@ -55,7 +54,7 @@ class CustomFeedbackRepositoryImpl (
     override fun findPagedByMember(memberId: Long, pageable: Pageable): Page<FeedbackResponse?> {
         val responses = jpaQueryFactory
             .select(feedbackResponseDto)
-            .from(feedback).join<Member>(member)
+            .from(feedback).join(member)
             .on(
                 feedback.member.eq(member)
                     .and(member.memberId.eq(memberId))
@@ -115,7 +114,7 @@ class CustomFeedbackRepositoryImpl (
     }
 
     companion object {
-        private val memberResponseDto: QBean<MemberResponse> = Projections.fields(
+        private val memberResponseDto = Projections.constructor(
             MemberResponse::class.java,
             member.memberId,
             member.email,
@@ -125,28 +124,27 @@ class CustomFeedbackRepositoryImpl (
             member.memberStatus
         )
 
-        private val feedbackResponseDto: QBean<FeedbackResponse> =
-            Projections.fields(
-                FeedbackResponse::class.java,
-                feedback.feedbackId,
-                feedback.subject,
-                feedback.content,
-                feedback.likeCount,
-                feedback.answerStatus,
-                feedback.createdAt,
-                feedback.updatedAt,
-                memberResponseDto.`as`("member")
-            )
+        private val feedbackResponseDto = Projections.constructor(
+            FeedbackResponse::class.java,
+            feedback.feedbackId,
+            feedback.subject,
+            feedback.content,
+            feedback.likeCount,
+            feedback.answerStatus,
+            feedback.createdAt,
+            feedback.updatedAt,
+            memberResponseDto
+        )
 
-        private val feedbackNoMemberDto: QBean<FeedbackResponse> =
-            Projections.fields(
-                FeedbackResponse::class.java,
-                feedback.feedbackId,
-                feedback.subject,
-                feedback.content,
-                feedback.likeCount,
-                feedback.createdAt,
-                feedback.updatedAt
-            )
+        private val feedbackNoMemberDto = Projections.fields(
+            FeedbackResponse::class.java,
+            feedback.feedbackId,
+            feedback.subject,
+            feedback.content,
+            feedback.likeCount,
+            feedback.answerStatus,
+            feedback.createdAt,
+            feedback.updatedAt
+        )
     }
 }
