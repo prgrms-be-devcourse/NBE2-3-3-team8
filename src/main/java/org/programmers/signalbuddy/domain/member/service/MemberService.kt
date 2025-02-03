@@ -1,9 +1,12 @@
 package org.programmers.signalbuddy.domain.member.service
 
 import jakarta.servlet.http.HttpServletRequest
+import org.programmers.signalbuddy.domain.member.dto.MemberJoinRequest
 import org.programmers.signalbuddy.domain.member.dto.MemberResponse
 import org.programmers.signalbuddy.domain.member.dto.MemberUpdateRequest
 import org.programmers.signalbuddy.domain.member.entity.Member
+import org.programmers.signalbuddy.domain.member.entity.enums.MemberRole
+import org.programmers.signalbuddy.domain.member.entity.enums.MemberStatus
 import org.programmers.signalbuddy.domain.member.exception.MemberErrorCode
 import org.programmers.signalbuddy.domain.member.mapper.MemberMapper
 import org.programmers.signalbuddy.domain.member.repository.MemberRepository
@@ -127,5 +130,24 @@ class MemberService(
         request.session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext)
         // HttpSession 갱신
         request.session.setAttribute("user", userDetails)
+    }
+
+    fun joinMember(memberJoinRequest: MemberJoinRequest): MemberResponse? {
+
+        if(memberRepository.existsByEmail(memberJoinRequest.email)){
+            throw BusinessException(MemberErrorCode.ALREADY_EXIST_EMAIL)
+        }
+
+        val profilePath = saveProfileImageIfPresent(memberJoinRequest.profileImageUrl)
+
+        val joinMember = memberRepository.save(Member(
+            email = memberJoinRequest.email,
+            nickname = memberJoinRequest.nickname,
+            password = bCryptPasswordEncoder.encode(memberJoinRequest.password),
+            profileImageUrl = profilePath,
+            memberStatus = MemberStatus.ACTIVITY,
+            role = MemberRole.USER
+        ))
+        return MemberMapper.INSTANCE.toDto(joinMember)
     }
 }

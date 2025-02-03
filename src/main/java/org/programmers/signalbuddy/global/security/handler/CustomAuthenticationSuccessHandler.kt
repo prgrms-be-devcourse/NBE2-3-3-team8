@@ -18,7 +18,7 @@ class CustomAuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler
         authentication: Authentication
     ) {
 
-        var redirectUrl = "/success"
+        var redirectUrl = "/"
         when (val principal = authentication.principal) {
             // 기본 로그인을 이용하는 사용자
             is CustomUserDetails -> {

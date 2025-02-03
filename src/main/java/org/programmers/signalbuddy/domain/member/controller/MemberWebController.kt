@@ -2,12 +2,16 @@ package org.programmers.signalbuddy.domain.member.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import jakarta.validation.Valid
 import lombok.extern.slf4j.Slf4j
 import org.programmers.signalbuddy.domain.bookmark.service.BookmarkService
+import org.programmers.signalbuddy.domain.member.dto.MemberJoinRequest
+import org.programmers.signalbuddy.domain.member.exception.MemberErrorCode
 import org.programmers.signalbuddy.domain.feedback.service.FeedbackService
 import org.programmers.signalbuddy.domain.member.service.MemberService
 import org.programmers.signalbuddy.global.annotation.CurrentUser
 import org.programmers.signalbuddy.global.dto.CustomUser2Member
+import org.programmers.signalbuddy.global.exception.BusinessException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.stereotype.Controller
@@ -83,6 +87,31 @@ class MemberWebController(
             mv.viewName = "member/info"
             mv.addObject("showModal", true) // 모달을 열도록 상태 추가
             mv.addObject("failed", "비밀번호가 일치하지 않습니다.")
+        }
+        return mv
+    }
+
+    @GetMapping("/signup")
+    fun signup(mv: ModelAndView): ModelAndView {
+        mv.addObject("memberJoinRequest", MemberJoinRequest())
+        mv.viewName = "member/signup"
+        return mv
+    }
+
+    @PostMapping("/signup")
+    fun registerMember(
+        @ModelAttribute @Valid joinMember: MemberJoinRequest,
+        mv: ModelAndView
+    ): ModelAndView {
+        try {
+            memberService.joinMember(joinMember)
+            mv.viewName = "redirect:/members/login"
+        } catch (e: BusinessException) {
+            if (e.errorCode == MemberErrorCode.ALREADY_EXIST_EMAIL) {
+                mv.addObject("errorMessage", e.message)
+            }
+            mv.viewName = "member/signup"
+
         }
         return mv
     }
