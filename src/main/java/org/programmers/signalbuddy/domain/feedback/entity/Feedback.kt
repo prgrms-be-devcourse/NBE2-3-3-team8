@@ -46,14 +46,11 @@ class Feedback private constructor(
     }
 
     fun updateFeedback(request: FeedbackWriteRequest) {
-        when {
-            this.subject != request.subject -> {
-                this.subject = request.subject!!
-            }
-
-            this.content != request.content -> {
-                this.content = request.content!!
-            }
+        if (this.subject != request.subject) {
+            this.subject = request.subject!!
+        }
+        if (this.content != request.content) {
+            this.content = request.content!!
         }
     }
 
