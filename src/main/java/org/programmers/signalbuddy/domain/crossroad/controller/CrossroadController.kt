@@ -17,16 +17,17 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/crossroads")
 @RequiredArgsConstructor
-class CrossroadController {
-     private lateinit var crossroadService: CrossroadService
-     private lateinit var crossroadRepository: CrossroadRepository
+class CrossroadController (
+    private var crossroadService: CrossroadService,
+    private var crossroadRepository: CrossroadRepository
+) {
 
     @PostMapping("/save")
     fun saveCrossroadDates(
         @RequestParam("page") page: @Min(1) Int,
         @RequestParam("size") pageSize: @Min(10) Int
     ): ResponseEntity<Void> {
-        crossroadService!!.saveCrossroadDates(page, pageSize)
+        crossroadService.saveCrossroadDates(page, pageSize)
         return ResponseEntity.ok().build<Void>()
     }
 
@@ -44,9 +45,10 @@ class CrossroadController {
     fun markerToState(@PathVariable("id") id: Long): ResponseEntity<List<CrossroadStateApiResponse>> {
 
         val headers = HttpHeaders()
-        headers.setCacheControl(CacheControl.noCache().getHeaderValue())
+        headers.cacheControl = CacheControl.noCache().headerValue
 
         val stateRes: List<CrossroadStateApiResponse>? = crossroadService.checkSignalState(id)
+        println(stateRes)
 
         return ResponseEntity.ok()
             .headers(headers)

@@ -18,10 +18,11 @@ private val logger = KotlinLogging.logger {}
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class CrossroadService {
-    private lateinit var crossroadRepository: CrossroadRepository
-    private lateinit var crossroadProvider: CrossroadProvider
-    private lateinit var httpRequestManager: HttpRequestManager
+class CrossroadService (
+    private var crossroadRepository: CrossroadRepository,
+    private var crossroadProvider: CrossroadProvider,
+    private var httpRequestManager: HttpRequestManager
+){
 
     // TODO: 시간 남으면 Spring Batch로 동작시키기
     @Transactional
