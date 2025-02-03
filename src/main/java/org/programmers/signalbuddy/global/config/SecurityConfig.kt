@@ -51,6 +51,8 @@ class SecurityConfig(
                         "/ws/**",
                         "/webjars/**"
                     ).permitAll() // 로그인, 회원가입
+                    .requestMatchers("/members/restore", "/api/members/restore",
+                        "/api/members/auth-code", "/api/members/verify-code").permitAll() // 계정 복구
                     .requestMatchers(
                         "/members/login", "/admins/login", "/api/members/join",
                         "/api/admins/join", "/members/signup", "/api/members/files/**"

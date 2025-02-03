@@ -115,5 +115,11 @@ class MemberWebController(
         }
         return mv
     }
+
+    @GetMapping("/restore")
+    fun reRegisterQ(mv: ModelAndView): ModelAndView {
+        mv.viewName = "member/restore"
+        return mv
+    }
 }
 

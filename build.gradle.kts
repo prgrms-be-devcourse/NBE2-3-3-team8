@@ -126,6 +126,9 @@ dependencies {
 
     // toString(), equals(), hashCode() 구현을 위해 사용할 라이브러리
     implementation("com.github.consoleau:kassava:2.1.0")
+
+    //mail
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 }
 
 // 테스트 환경 설정
