@@ -1,26 +1,30 @@
-package org.programmers.signalbuddy.domain.member.controller
+package org.programmers.signalbuddy.domain.admin.controller
 
-import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.tags.Tag
+import lombok.RequiredArgsConstructor
+import lombok.extern.slf4j.Slf4j
 import org.programmers.signalbuddy.domain.admin.dto.AdminMemberResponse
 import org.programmers.signalbuddy.domain.member.service.AdminService
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.ModelAndView
 
-@RestController
-@RequestMapping("/api/admins")
-@Tag(name = "Admins")
-class AdminController(
-    private val adminService: AdminService
-) {
+@Slf4j
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/admins")
+class AdminWebController(private val adminService: AdminService) {
 
-    @Operation(summary = "사용자 전체 조회 API")
-    @GetMapping("/members")
+    @GetMapping
+    fun adminsMain(): ModelAndView {
+        return ModelAndView("admin/main")
+    }
+
+    @GetMapping("members/list")
     fun getAllMembers(
         @PageableDefault(
             page = 0,
@@ -32,8 +36,7 @@ class AdminController(
         return ResponseEntity.ok(members)
     }
 
-    @Operation(summary = "사용자 상세 조회 API")
-    @GetMapping("/members/{id}")
+    @GetMapping("members-detail/{id}")
     fun getAllMembers(@PathVariable id : Long): ResponseEntity<AdminMemberResponse>? {
         val member = adminService.getMember(id)
         return ResponseEntity.ok(member)
