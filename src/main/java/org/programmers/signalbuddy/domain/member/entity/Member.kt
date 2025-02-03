@@ -8,6 +8,7 @@ import org.programmers.signalbuddy.domain.basetime.BaseTimeEntity
 import org.programmers.signalbuddy.domain.member.dto.MemberUpdateRequest
 import org.programmers.signalbuddy.domain.member.entity.enums.MemberRole
 import org.programmers.signalbuddy.domain.member.entity.enums.MemberStatus
+import org.programmers.signalbuddy.global.dto.CustomUser2Member
 
 @Entity(name = "members")
 class Member(
@@ -43,8 +44,8 @@ class Member(
         fun isAdmin(member: Member): Boolean = member.role == MemberRole.ADMIN
 
         // 요청자와 작성자가 다른 경우
-//        fun isNotSameMember(user: CustomUser2Member, member: Member): Boolean =
-//            user.memberId != member.memberId
+        fun isNotSameMember(user: CustomUser2Member?, member: Member): Boolean =
+            user?.memberId != member.memberId
     }
 
     fun updateMember(
