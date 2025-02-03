@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import lombok.extern.slf4j.Slf4j
 import org.programmers.signalbuddy.domain.bookmark.service.BookmarkService
+import org.programmers.signalbuddy.domain.feedback.service.FeedbackService
 import org.programmers.signalbuddy.domain.member.service.MemberService
 import org.programmers.signalbuddy.global.annotation.CurrentUser
 import org.programmers.signalbuddy.global.dto.CustomUser2Member
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView
 class MemberWebController(
     private val memberService: MemberService,
     private val bookmarkService: BookmarkService,
+    private val feedbackService: FeedbackService
 ) {
     @ModelAttribute("user")
     fun currentUser(@CurrentUser user: CustomUser2Member) = user
@@ -55,16 +57,16 @@ class MemberWebController(
         return mv
     }
 
-//    @GetMapping("{id}/feedbacks")
-//    fun findPagedFeedbacks(
-//        @PageableDefault(page = 0, size = 5) pageable: Pageable?,
-//        mv: ModelAndView, @PathVariable id: Long?
-//    ): ModelAndView {
-//        val pagedFeedbacks = feedbackService.findPagedFeedbacksByMember(id, pageable)
-//        mv.addObject("pagination", pagedFeedbacks)
-//        mv.viewName = "member/feedback/list"
-//        return mv
-//    }
+    @GetMapping("{id}/feedbacks")
+    fun findPagedFeedbacks(
+        @PageableDefault(page = 0, size = 5) pageable: Pageable,
+        mv: ModelAndView, @PathVariable id: Long
+    ): ModelAndView {
+        val pagedFeedbacks = feedbackService.findPagedFeedbacksByMember(id, pageable)
+        mv.addObject("pagination", pagedFeedbacks)
+        mv.viewName = "member/feedback/list"
+        return mv
+    }
 
     @PostMapping("verify-password")
     @Operation(summary = "현재 사용자의 비밀번호 검사", description = "회원정보 수정 시 비밀번호 확인 API")
