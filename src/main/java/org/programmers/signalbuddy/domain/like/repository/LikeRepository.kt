@@ -2,6 +2,7 @@ package org.programmers.signalbuddy.domain.like.repository
 
 import org.programmers.signalbuddy.domain.like.entity.Like
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
@@ -14,6 +15,10 @@ interface LikeRepository : JpaRepository<Like?, Long?> {
                 + "WHERE l.member.memberId = :memberId AND l.feedback.feedbackId = :feedbackId"
     )
     fun existsByMemberAndFeedback(
-        @Param("memberId") memberId: Long, @Param("feedbackId") feedbackId: Long
+        @Param("memberId") memberId: Long?, @Param("feedbackId") feedbackId: Long
     ): Boolean
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("DELETE FROM likes l WHERE l.feedback.feedbackId = :feedbackId")
+    fun deleteAllByFeedbackId(@Param("feedbackId") feedbackId: Long)
 }

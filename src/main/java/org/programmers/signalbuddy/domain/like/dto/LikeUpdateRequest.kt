@@ -1,10 +1,8 @@
 package org.programmers.signalbuddy.domain.like.dto
 
-import lombok.Getter
 import org.programmers.signalbuddy.domain.like.exception.LikeErrorCode
 import org.programmers.signalbuddy.global.exception.BusinessException
 
-@Getter
 class LikeUpdateRequest (
     val feedbackId: Long,
     val memberId: Long,

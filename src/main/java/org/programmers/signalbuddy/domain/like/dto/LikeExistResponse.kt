@@ -1,5 +1,5 @@
 package org.programmers.signalbuddy.domain.like.dto
 
-class LikeExistResponse (
+data class LikeExistResponse (
     val status: Boolean
 )

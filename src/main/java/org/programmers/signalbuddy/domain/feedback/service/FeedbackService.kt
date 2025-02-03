@@ -10,6 +10,7 @@ import org.programmers.signalbuddy.domain.feedback.exception.FeedbackErrorCode
 import org.programmers.signalbuddy.domain.feedback.repository.FeedbackJdbcRepository
 import org.programmers.signalbuddy.domain.feedback.repository.FeedbackRepository
 import org.programmers.signalbuddy.domain.feedback.repository.findByIdOrThrow
+import org.programmers.signalbuddy.domain.like.repository.LikeRepository
 import org.programmers.signalbuddy.domain.member.entity.Member
 import org.programmers.signalbuddy.domain.member.exception.MemberErrorCode
 import org.programmers.signalbuddy.domain.member.repository.MemberRepository
@@ -29,7 +30,8 @@ class FeedbackService (
     private val feedbackRepository: FeedbackRepository,
     private val memberRepository: MemberRepository,
     private val feedbackJdbcRepository: FeedbackJdbcRepository,
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val likeRepository: LikeRepository
 ) {
 
     fun searchFeedbackList(
@@ -100,6 +102,7 @@ class FeedbackService (
         }
 
         commentRepository.deleteAllByFeedbackId(feedbackId)
+        likeRepository.deleteAllByFeedbackId(feedbackId)
         feedbackRepository.deleteById(feedbackId)
     }
 
