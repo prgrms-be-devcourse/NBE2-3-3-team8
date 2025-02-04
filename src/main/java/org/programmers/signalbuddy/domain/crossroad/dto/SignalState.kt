@@ -2,13 +2,16 @@ package org.programmers.signalbuddy.domain.crossroad.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
+import jakarta.persistence.Column
 import lombok.AccessLevel
 import lombok.AllArgsConstructor
 import java.util.*
 
 
 enum class SignalState (
-        val state: String?,
+        @Column(name = "state")
+        @get:JvmName("getStateProperty")
+        private val state: String?,
         val can_cross: Boolean?
     ){
 
@@ -17,7 +20,7 @@ enum class SignalState (
     RED("stop-And-Remain", false); // 신호등이 적색, 정지 상태
 
     @JsonValue // 데이터 직렬화 java -> JSON
-    fun getLowerState(): String {
+    fun getState(): String {
         return name.lowercase(Locale.getDefault())
     }
 

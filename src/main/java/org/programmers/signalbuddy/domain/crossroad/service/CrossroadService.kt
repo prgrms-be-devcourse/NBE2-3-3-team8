@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional
 private val logger = KotlinLogging.logger {}
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 class CrossroadService (
     private var crossroadRepository: CrossroadRepository,
@@ -46,7 +45,7 @@ class CrossroadService (
         }
     }
 
-    fun checkSignalState(id: Long): List<CrossroadStateApiResponse>? { // id값으로 신호등의 상태를 검색
+    fun checkSignalState(id: Long): List<CrossroadStateApiResponse> { // id값으로 신호등의 상태를 검색
 
         httpRequestManager.increase(id)
         return crossroadProvider.requestCrossroadStateApi(id)

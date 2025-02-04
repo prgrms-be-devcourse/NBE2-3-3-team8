@@ -47,13 +47,14 @@ class CrossroadController (
         val headers = HttpHeaders()
         headers.cacheControl = CacheControl.noCache().headerValue
 
-        val stateRes: List<CrossroadStateApiResponse>? = crossroadService.checkSignalState(id)
+        val stateRes: List<CrossroadStateApiResponse> = crossroadService.checkSignalState(id)
         println(stateRes)
 
         return ResponseEntity.ok()
             .headers(headers)
             .contentType(MediaType.APPLICATION_JSON)
             .body(stateRes)
+
     }
 
     @GetMapping("/around") // 좌표 값을 기반으로 50m이내 신호등 반환
