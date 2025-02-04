@@ -60,4 +60,8 @@ class Member(
     fun softDelete() {
         this.memberStatus = MemberStatus.WITHDRAWAL
     }
+
+    fun restoreAccount() {
+        this.memberStatus = MemberStatus.ACTIVITY
+    }
 }

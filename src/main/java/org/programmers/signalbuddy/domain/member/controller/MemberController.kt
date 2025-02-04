@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
+import org.programmers.signalbuddy.domain.email.dto.EmailRequest
+import org.programmers.signalbuddy.domain.email.dto.VerifyCodeRequest
+import org.programmers.signalbuddy.domain.email.service.EmailService
 import org.programmers.signalbuddy.domain.feedback.dto.FeedbackResponse
 import org.programmers.signalbuddy.domain.feedback.service.FeedbackService
 import org.programmers.signalbuddy.domain.member.dto.MemberResponse
@@ -25,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile
 class MemberController(
     private val memberService: MemberService,
     private val feedbackService: FeedbackService,
+    private val emailService: EmailService
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -85,5 +89,24 @@ class MemberController(
         logger.info { "id : {} $id" }
         val feedbacks = feedbackService.findPagedFeedbacksByMember(id, pageable)
         return ResponseEntity.ok(feedbacks)
+    }
+
+    @Operation(summary = "인증 코드 요청 API")
+    @PostMapping("/auth-code")
+    fun authCode(@RequestBody email: EmailRequest): ResponseEntity<Unit> {
+        emailService.sendEmail(email)
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/verify-code")
+    fun verifyCode(@RequestBody verifyCodeRequest: VerifyCodeRequest): ResponseEntity<Unit> {
+        emailService.verifyCode(verifyCodeRequest)
+        return ResponseEntity.ok().build()
+    }
+
+    @PatchMapping("/restore")
+    fun restore(@RequestBody email: EmailRequest): ResponseEntity<Unit> {
+        memberService.restore(email)
+        return ResponseEntity.ok().build()
     }
 }

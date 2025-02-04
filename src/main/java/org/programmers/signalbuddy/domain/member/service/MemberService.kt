@@ -1,6 +1,7 @@
 package org.programmers.signalbuddy.domain.member.service
 
 import jakarta.servlet.http.HttpServletRequest
+import org.programmers.signalbuddy.domain.email.dto.EmailRequest
 import org.programmers.signalbuddy.domain.member.dto.MemberJoinRequest
 import org.programmers.signalbuddy.domain.member.dto.MemberResponse
 import org.programmers.signalbuddy.domain.member.dto.MemberUpdateRequest
@@ -149,5 +150,12 @@ class MemberService(
             role = MemberRole.USER
         ))
         return MemberMapper.INSTANCE.toDto(joinMember)
+    }
+
+    @Transactional
+    fun restore(emailRequest: EmailRequest) {
+        val restoreMember: Member = memberRepository.findByEmail(emailRequest.email)
+            ?: throw BusinessException(MemberErrorCode.NOT_FOUND_MEMBER)
+        restoreMember.restoreAccount()
     }
 }
