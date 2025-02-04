@@ -32,7 +32,7 @@ class QueryCrossroadRepositoryImpl : QueryCrossroadRepository {
             .fetch()
 
         for (near in nearCrossroads) {
-            res.add(CrossroadApiResponse(near))
+            res.add(CrossroadApiResponse.toDto(near))
         }
 
         return res

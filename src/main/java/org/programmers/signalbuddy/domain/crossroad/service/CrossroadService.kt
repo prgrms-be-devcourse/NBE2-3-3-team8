@@ -57,7 +57,7 @@ class CrossroadService (
         val responseList: MutableList<CrossroadApiResponse> = ArrayList()
 
         for (crossroad in crossroads.filterNotNull()) {
-            responseList.add(CrossroadApiResponse(crossroad))
+            responseList.add(CrossroadApiResponse.toDto(crossroad))
         }
 
         return responseList

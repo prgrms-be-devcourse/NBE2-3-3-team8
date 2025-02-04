@@ -5,12 +5,23 @@ import org.programmers.signalbuddy.domain.crossroad.entity.Crossroad
 import org.programmers.signalbuddy.domain.crossroad.service.PointUtil
 
 data class CrossroadApiResponse(
-    val crossroad: Crossroad,
-    val crossroadApiId: String = crossroad.crossroadApiId,
-    val name: String = crossroad.name,
-    val lat: Double = crossroad.coordinate.y, // 위도
-    val lng: Double = crossroad.coordinate.x // 경도
+    val crossroadApiId: String,
+    val name: String,
+    val lat: Double, // 위도
+    val lng: Double // 경도
 ) {
+
+    companion object {
+        fun toDto(entity: Crossroad): CrossroadApiResponse {
+            return CrossroadApiResponse(
+                crossroadApiId = entity.crossroadApiId,
+                name = entity.name,
+                lat = entity.coordinate.y,
+                lng = entity.coordinate.x
+            )
+        }
+    }
+
     fun toPoint(): Point {
         return PointUtil.toPoint(this.lat, this.lng)
     }
