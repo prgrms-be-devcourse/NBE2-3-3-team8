@@ -6,8 +6,6 @@ import org.programmers.signalbuddy.domain.basetime.BaseTimeEntity
 import org.programmers.signalbuddy.domain.crossroad.dto.CrossroadApiResponse
 
 @Entity(name = "crossroads")
-@Builder
-@ToString
 class Crossroad(response: CrossroadApiResponse) : BaseTimeEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
