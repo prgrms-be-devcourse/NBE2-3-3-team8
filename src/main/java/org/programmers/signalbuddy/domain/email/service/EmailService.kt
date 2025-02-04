@@ -25,7 +25,7 @@ class EmailService(
     private val templateEngine: SpringTemplateEngine,
     private val redisTemplate: RedisTemplate<String, String>
 ) {
-    private val expirePeriod = 1000L * 60L * 10
+    private val expirePeriod = 60 * 10L
 
     // 이메일 발송
     fun sendEmail(emailRequest: EmailRequest) {
